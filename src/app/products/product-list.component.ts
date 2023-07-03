@@ -33,7 +33,7 @@ export class ProductListComponent implements OnInit {
       "releaseDate": "March 18, 2021",
       "description": "15 gallon capacity rolling garden cart",
       "price": 32.99,
-      "starRating": 4.2,
+      "starRating": 2,
       "imageUrl": "assets/images/garden_cart.png"
     },
     {
@@ -59,6 +59,10 @@ export class ProductListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.listFilter = "cart";
+    this.listFilter = "";
+  }
+
+  onRatingClicked(message: string): void {
+    this.pageTitle = 'Product List: ' + message;
   }
 }
