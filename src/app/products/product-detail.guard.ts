@@ -6,14 +6,15 @@ import {
   CanActivate,
   Router,
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
+import { ProductDetailService } from './product-detail.service';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class ProductDetailGuard implements CanActivate  {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private productDetailService: ProductDetailService) {}
+
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
@@ -23,6 +24,25 @@ export class ProductDetailGuard implements CanActivate  {
         this.router.navigate(['/products']);
         return false;
       }
-    return true;
+      if (this.productDetailService.productCache[id]) {
+        return true;
+      }
+      return this.productDetailService.getProductById(id).pipe(
+        map(product => {
+          console.log("product", product)
+          if (product) {
+            return true;
+          } else {
+            alert("Product not found");
+            this.router.navigate(['/products']);
+            return false;
+          }
+        }),
+        catchError(error => {
+          alert("An error occurred while retrieving the product");
+          this.router.navigate(['/products']);
+          return of(false);
+        })
+      );
     }
 };

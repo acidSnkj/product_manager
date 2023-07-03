@@ -1,23 +1,30 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { IProducts } from './products';
-
+import { ActivatedRoute, Router } from "@angular/router";
+import { ProductDetailService } from "./product-detail.service";
+import { Component, OnInit } from "@angular/core";
+import { IProducts } from "./products";
 @Component({
-  selector: 'pm-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
-
 export class ProductDetailComponent implements OnInit {
+  pageTitle = 'Product Detail';
+  product: IProducts | undefined;
+  errorMessage = '';
 
-  pageTitle: string = "Product Detail"
-  product: IProducts | undefined
+  constructor(private route: ActivatedRoute,
+              private router: Router,
+              private productDetailService: ProductDetailService) { }
 
-  constructor(private route: ActivatedRoute,private router: Router) {}
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    console.log("initiated product detail component")
-    this.pageTitle = `Product Detail: ${id}`;
+    if (this.productDetailService.productCache[id]) {
+      this.product = this.productDetailService.productCache[id];
+    } else {
+      this.productDetailService.getProductById(id).subscribe({
+        next: product => this.product = product,
+        error: err => this.errorMessage = err
+      });
+    }
   }
 
   onBack(): void {

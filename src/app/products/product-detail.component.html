@@ -1,6 +1,13 @@
 <div class="card">
   <div class="card-header" >
-    {{pageTitle + ': ' + product?.productName}}
+    {{pageTitle}} - {{product?.productName}}
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <img class="customImg" [src]="product?.imageUrl" class="img-fluid" [alt]="product?.productName">
+      </div>
+    </div>
   </div>
   <div class="card-footer">
     <div class="row">
